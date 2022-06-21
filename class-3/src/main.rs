@@ -1,7 +1,29 @@
 use std::collections::HashMap;
 
 fn main() {
-    println!("Hello, world!");
+    //Init school
+    let mut school = School::new();
+    //Test case 1
+    println!("Test case 1: school is empty array: {:?}", school);
+
+    //1. Thêm thông tin sinh viên
+    school.add(2, "Lee");
+
+    //2. Liệt kê các điểm số hiện tại mà trường đã cập nhập
+    let list_grade = school.grades();
+    println!("Test case 2a: list all grade with one students: {:?}", list_grade);
+
+    school.add(3, "Nancy");
+    let list_grade = school.grades();
+    println!("Test case 2a: list all grade with two students: {:?}", list_grade);
+    school.add(4, "Bob");
+    school.add(4, "Alice");
+    school.add(5, "Tom");
+
+    
+    //3. Liệt kê danh sách các học sinh có cùng 1 điểm số
+    let list_student_same_grade = school.grade(4);
+    println!("Test case 3: List students same grade and sort by alphabet: {:?}", list_student_same_grade);
 }
 
 
@@ -78,42 +100,44 @@ fn main() {
 /*-----------------------------*/
 
 // Sườn thông tin cho mọi người dễ làm
-
-pub struct Student {
-    name: String,
-    grade: u32,
-}
-
-impl Student {
-    pub fn new(name: &str, grade: u32) -> Student {
-        Student { name: name.to_string(), grade: grade}
-    }
-}
-
-
-
+#[derive(Debug)]
 pub struct School {
     students: HashMap<String, u32>
 }
 
 impl School {
     pub fn new() -> School {
-        School { students: HashMap::from([]) }
+        School { students: HashMap::new() }
     }
 
     pub fn add(&mut self, grade: u32, name: &str) {
         //self.students.push(Student::new(grade, name))
-        self.students.insert(Student::new(name, grade));
+        self.students.insert(name.to_string(), grade);
     }
 
     pub fn grades(&self) -> Vec<u32> {
-        self.students.iter().unique()
+        //self.students.iter().unique()
+        let mut list_grade = vec![];
+        for (_name, grade) in self.students.iter() {
+            list_grade.push(*grade);
+        }
+        list_grade.sort();
+        list_grade.dedup();
+        list_grade
     }
 
 
-    // pub fn grade(&self, grade: u32) -> Vec<String> {
-    //     unimplemented!()
+    pub fn grade(&self, grade: u32) -> Vec<String> {
 
+        let mut list_name = vec![];
+        for (name, _grade ) in self.students.iter() {
+            if *_grade == grade {
+                list_name.push(name.to_string());
+            }
+        }
+        list_name.sort();
+        list_name
         
-    // }
+    }
 }
+
